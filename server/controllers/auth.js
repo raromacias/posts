@@ -13,8 +13,26 @@ module.exports = {
 
 
  
-login: (req,res) => {
-         console.log('logged in')
+login: async (req,res) => {
+        try {
+            const {username, password} = req.body
+            const foundUser = await User.findOne({where: {username:username}})
+            if (foundUser) {
+                const isAuthenticated = bcrypt.compareSync(password, foundUser.hashedPass)
+                if (isAuthenticated) {
+                    const token = createToken(foundUser.dataValues.username,foundUser.dataValues.id)
+                    const exp = Date.now() + 1000 * 60 * 60 * 48
+                    res.status(200).send({username:foundUser.dataValues.username, userId:foundUser.dataValues.id, token: token, exp:exp})
+                } else {
+                    res.status(400).send("Cannot log in")
+                }
+            } else {
+                res.status(400).send("Cannot log in")
+            }  
+        } catch (error) {
+            console.log(error)
+        res.status(400).send(error)
+        }
       },
 
 logout: (req, res) => {
