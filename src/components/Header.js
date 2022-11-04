@@ -1,5 +1,5 @@
 import {NavLink} from 'react-router-dom'
-import { useContext, Redirect } from 'react'
+import { useContext} from 'react'
 import AuthContext from '../store/authContext'
 import logo from '../assets/dm-logo-white.svg'
 
@@ -18,26 +18,33 @@ const Header = () => {
                 <h2>Social Mountain</h2>
             </div>
             <nav>
+                {
+                     authCtx.token ? (
                 <ul className='main-nav'>
                     <li>
                         <NavLink style={styleActiveLink} to='/'>Home</NavLink>
                     </li>
                     <li>
-                       {authCtx.token && (<NavLink style={styleActiveLink} to='profile'>Profile</NavLink>)}
-                       {!authCtx.token && <Redirect to='/auth'/>}
+                       <NavLink style={styleActiveLink} to='profile'>Profile</NavLink>
                     </li>
                     <li>
-                       {authCtx.token && (<NavLink style={styleActiveLink} to='form'>Add Post</NavLink>)}
-                       {!authCtx.token && <Redirect to='/auth'/>}
+                       <NavLink style={styleActiveLink} to='form'>Add Post</NavLink>
                     </li>
                     <li>
-                       {!authCtx.token && (<NavLink style={styleActiveLink} to='auth'>Login or Register</NavLink>)}
+                       <button className='logout-btn' onClick={() => authCtx.logout()}>Logout</button>
                     </li>
+                    </ul>
+                     ) : (
+                        <ul className='main-nav'>
+                     <li>
+                        <NavLink style={styleActiveLink} to='/'>Home</NavLink>
+                    </li>        
                     <li>
-                       {authCtx.token && (<button className='logout-btn' onClick={() => authCtx.logout()}>Logout</button>)}
-                       {!authCtx.token && <Redirect to='/auth'/>}
-                        </li>
-                </ul>
+                       <NavLink style={styleActiveLink} to='auth'>Login or Register</NavLink>
+                    </li>
+                        </ul>
+                     )
+                }
             </nav>
         </header>
     )

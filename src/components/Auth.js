@@ -14,35 +14,33 @@ const Auth = () => {
        e.preventDefault()
        setRegister(!register)
 
+       const body = {
+        username,
+        password
+    }
+
        if(register){
-        axios.post(`https://socialmtn.devmountain.com/register`,
-        {
-            username: username,
-            password: password
-        })
+        axios.post(`/register`,body)
         .then((res)=> {
-            authCtx.login('token', 'exp', 'userId')
-            console.log(res.data)})
-        .catch((err)=> console.log(err))
+            console.log('AFTER AUTH',res.data)
+            authCtx.login(res.data.token, res.data.exp, res.data.userId)})
+        .catch(err=> {
          setUsername('');
         setPassword('');
+       })
        } else {
-        axios.post(`https://socialmtn.devmountain.com/login`,
-        {
-            username: username,
-            password: password
-        })
+        axios.post(`/login`, body)
         .then((res)=> {
-            authCtx.login('token', 'exp', 'userId')
-            console.log(res.data)})
-        .catch((err)=> console.log(err))
+            console.log('AFTER AUTH',res.data)
+            authCtx.login(res.data.token, res.data.exp, res.data.userId)})
+        .catch((err)=> {
         setUsername('');
         setPassword('');
-       }
+       })
        
  
-       console.log('submitHandler called')
-   }
+      
+   }}
    const handleUserNameChange = (e) => {
     
         setUsername(e.target.value)
@@ -71,12 +69,13 @@ const Auth = () => {
                    value={password}
                    onChange={handlePasswordChange}/>
                <button className='form-btn'>
-                   {register ? 'Sign Up' : 'Login'}
+                   {register ? 'Sign Up' : 'Login'}?
                </button>
            </form>
-           <button className='form-btn'>Need to {register ? 'Login' : 'Sign Up'}?</button>
+           <button className='form-btn' onClick={() => setRegister(!register)}>
+            Need to {register ? 'Login' : 'Sign Up'}?</button>
        </main>
    )
 }
- 
+
 export default Auth

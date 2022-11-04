@@ -15,7 +15,7 @@ module.exports = {
         //initializing the variable token
         let token
 
-
+         console.log(headerToken, SECRET)
         try {
             //this line refers to the secret token that each user gets to get access to the app
             token = jwt.verify(headerToken, SECRET)
